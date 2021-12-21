@@ -40,6 +40,11 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -92,6 +97,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\RankedPlaylistGenerator\Models\Difficulty.cs">
+      <Link>RankedPlaylistGenerator\Models\Difficulty.cs</Link>
+    </Compile>
+    <Compile Include="..\RankedPlaylistGenerator\Models\Playlist.cs">
+      <Link>RankedPlaylistGenerator\Models\Playlist.cs</Link>
+    </Compile>
+    <Compile Include="..\RankedPlaylistGenerator\Models\Song.cs">
+      <Link>RankedPlaylistGenerator\Models\Song.cs</Link>
+    </Compile>
+    <Compile Include="..\RankedPlaylistGenerator\RankedPlaylistGenerator.cs">
+      <Link>RankedPlaylistGenerator\RankedPlaylistGenerator.cs</Link>
+    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="RankedPlaylistController.cs" />
