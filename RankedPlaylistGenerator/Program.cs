@@ -13,16 +13,22 @@ namespace RankedPlaylistGenerator
     internal class Program
     {
         private const string _baseURL = "http://scoresaber.com";
-        private static readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _client = new HttpClient();
 
-        private float _minStar = 5.5f;
-        private float _maxStar = 8.5f;
+        private readonly float _minStar;
+        private readonly float _maxStar;
 
-        private int _maxSize = 30;
+        private readonly int _maxSize;
 
-        private List<string> _maps = new List<string>();
+        private readonly Playlist _playlist;
 
-        private Playlist _playlist = new Playlist("test title", "test author");
+        private Program(float minStar, float maxStar, int size)
+        {
+	        _minStar = minStar;
+	        _maxStar = maxStar;
+	        _maxSize = size;
+	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
+        }
 
         private async Task Make()
         {
@@ -32,6 +38,7 @@ namespace RankedPlaylistGenerator
 
             string filename = $"Ranked {_minStar}-{_maxStar} {DateTimeOffset.Now.ToUnixTimeSeconds()}.bplist";
             
+            Console.WriteLine("\n\n================ Write out bplist ================\n\n");
             Console.WriteLine(filename);
 
             JObject bplist = JObject.FromObject(_playlist);
@@ -105,6 +112,7 @@ namespace RankedPlaylistGenerator
             }
 
             Console.WriteLine("Fetch Done");
+            Console.WriteLine($"{size} maps/difficulties");
         }
 
         private void AddSong(JToken map)
@@ -219,13 +227,51 @@ namespace RankedPlaylistGenerator
                 Console.WriteLine(e);
                 return null;
             }
-            
+        }
+
+        private static bool ScanFloat(out float f, string prompt)
+        {
+	        Console.Write(prompt);
+	        var success = float.TryParse(Console.ReadLine(), out var result);
+	        f = result;
+	        return success;
+        }
+        
+        private static bool ScanInt(out int i, string prompt)
+        {
+	        Console.Write(prompt);
+	        var success = int.TryParse(Console.ReadLine(), out var result);
+	        i = result;
+	        return success;
         }
 
         public static void Main(string[] args)
         {
-            Program program = new Program();
+	        float minStar;
+	        float maxStar;
+	        int size;
+			
+	        while (!ScanFloat(out maxStar, "Maximum Star:"))
+	        {
+		        Console.WriteLine("Invalid input");
+	        }
+
+	        while (!ScanFloat(out minStar, "Minimum Star:"))
+	        {
+		        Console.WriteLine("Invalid input");
+	        }
+	        
+	        while (!ScanInt(out size, "Playlist Size (roughly):"))
+	        {
+		        Console.WriteLine("Invalid input");
+	        }
+	        
+            Program program = new Program(minStar, maxStar, size);
             program.Make().Wait();
+            // Console.Beep();
+            Console.WriteLine("Done \a");
+            Console.WriteLine("Press Enter to Finish...");
+            Console.ReadLine();
         }
     }
 }
