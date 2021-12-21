@@ -85,23 +85,120 @@ namespace RankedPlaylistGenerator
                     // or we encountered an error that no maps are returned
                     break;
                 }
-                Console.WriteLine(maps.Length);
+                
+                // add the maps in this page
                 foreach (var map in maps)
                 {
-                    // add songs
-                    
-                    
-                    
-                    
-                    size++;
+	                
+	                if (map == null)
+	                {
+		                // a null map ??
+		                continue;
+	                }
+	                AddSong(map);
+	                size++;
                 }
+                
                 // next page
                 page++;
                 response = await FetchPage(page);
             }
 
             Console.WriteLine("Fetch Done");
+        }
 
+        private void AddSong(JToken map)
+        {
+	        /* example leaderboard object
+            {
+				"id": 238821,
+				"songHash": "CB24CE05B6D0994586E2D4FBE999B304CF8F9D67",
+				"songName": "Galaxy Collapse",
+				"songSubName": "",
+				"songAuthorName": "Kurokotei",
+				"levelAuthorName": "Skeelie",
+				"difficulty": {
+					"leaderboardId": 238821,
+					"difficulty": 7,
+					"gameMode": "SoloStandard",
+					"difficultyRaw": "_Expert_SoloStandard"
+				},
+				"maxScore": 3023235,
+				"createdDate": "2020-05-11T20:26:24.000Z",
+				"rankedDate": "2020-05-16T01:17:23.000Z",
+				"qualifiedDate": null,
+				"lovedDate": null,
+				"ranked": true,
+				"qualified": false,
+				"loved": false,
+				"maxPP": -1,
+				"stars": 7.99,
+				"plays": 2091,
+				"dailyPlays": 0,
+				"positiveModifiers": false,
+				"playerScore": null,
+				"coverImage": "https://cdn.scoresaber.com/covers/CB24CE05B6D0994586E2D4FBE999B304CF8F9D67.png",
+				"difficulties": null
+			}
+			*/
+	        
+            // first get the basic song info
+            var songName = map["songName"]?.ToObject<string>();
+            var author = map["songAuthorName"]?.ToObject<string>();
+            var hash = map["songHash"]?.ToObject<string>()?.ToUpper();
+
+            if (string.IsNullOrEmpty(hash))
+            {
+	            Console.WriteLine("Map without hash encountered, skipping \a");
+	            // Console.Beep();
+                // there is nothing without song hash
+                return;
+            }
+            Console.WriteLine($"{songName} - {author}");
+            var id = "custom_level_" + hash;
+            
+            // Then check the difficult
+            var diff = map["difficulty"];
+            var mode = diff?["gameMode"]?.ToObject<string>();
+            var diffInt = diff?["difficulty"]?.ToObject<int>();
+            
+            if (!string.IsNullOrEmpty(mode) && mode.Substring(0, 4) == "Solo")
+            {
+	            mode = mode.Substring(4);
+	            
+                string difficulty = null;
+                switch (diffInt)
+                {
+                    case 1:
+	                    difficulty = "Easy";
+	                    break;
+                    case 3:
+	                    difficulty = "Normal";
+	                    break;
+                    case 5:
+	                    difficulty = "Hard";
+	                    break;
+                    case 7:
+	                    difficulty = "Expert";
+	                    break;
+                    case 9:
+	                    difficulty = "ExpertPlus";
+	                    break;
+                    default:
+	                    difficulty = null;
+	                    break;
+                }
+
+                if (!string.IsNullOrEmpty(difficulty))
+                {
+                    _playlist.AddSong(songName, author, hash, id, mode, difficulty);
+                    return;
+                }
+            }
+            
+            // we can't figure out the difficulty, just don't include it 
+			_playlist.AddSong(songName, author, hash, id);
+	        
         }
         
         private async Task<JObject> FetchPage(int page)
