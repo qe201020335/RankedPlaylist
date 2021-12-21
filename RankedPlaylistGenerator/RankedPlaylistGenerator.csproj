@@ -45,9 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Difficulty.cs" />
-    <Compile Include="Models\Playlist.cs" />
-    <Compile Include="Models\Song.cs" />
+    <Compile Include="..\Common\Models\Difficulty.cs">
+      <Link>Models\Difficulty.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Models\Playlist.cs">
+      <Link>Models\Playlist.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\Models\Song.cs">
+      <Link>Models\Song.cs</Link>
+    </Compile>
+    <Compile Include="..\Common\RankedPlaylistGenerator.cs">
+      <Link>RankedPlaylistGenerator.cs</Link>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
