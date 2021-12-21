@@ -48,6 +48,8 @@ namespace RankedPlaylist
             Log.Debug("OnApplicationStart");
             new GameObject("RankedPlaylistController").AddComponent<RankedPlaylistController>();
 
+            var generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(5.5f, 8.5f, 500);
+            Log.Debug(generator.ToString());
         }
 
         [OnExit]

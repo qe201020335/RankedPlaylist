@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace RankedPlaylistGenerator.Models
@@ -11,9 +12,16 @@ namespace RankedPlaylistGenerator.Models
 
         [JsonProperty] public List<Song> songs => GetSongs();
 
-        [JsonProperty] public readonly string image = "";
+        [JsonProperty] public string image = "";
+        
+        [JsonProperty] public string playlistDescription = "";
+        
+        // I hate duplicates in playlists, so 
+        private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // hash: Song
 
-        private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();
+        public int Size => _songs.Count;
+        
+        
 
         public Playlist(string title, string author)
         {
