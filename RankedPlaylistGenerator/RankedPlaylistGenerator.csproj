@@ -64,6 +64,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="..\Common\Assets\PP_Stonks.png">
+      <Link>Assets\PP_Stonks.png</Link>
+    </EmbeddedResource>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

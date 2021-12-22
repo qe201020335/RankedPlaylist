@@ -7,6 +7,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RankedPlaylistGenerator.Models;
 using System.Net.Http;
+using System.Reflection;
+using System.Security.Cryptography;
 
 namespace RankedPlaylistGenerator
 {
@@ -32,6 +34,32 @@ namespace RankedPlaylistGenerator
         internal async Task<Playlist> Make()
         {
 	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
+	        byte[] imageBytes = null;
+	        
+	        // Code copied from PlaylistManager and PlaylistsLib
+	        using (Stream imageStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RankedPlaylistGenerator.Assets.PP_Stonks.png"))
+	        {
+		        if (imageStream == null || !imageStream.CanRead)
+			        imageBytes = null;
+		        else if (imageStream is MemoryStream cast)
+		        {
+			        imageBytes = cast.ToArray();
+		        }
+		        else
+		        {
+			        using (MemoryStream ms = new MemoryStream())
+			        {
+				        imageStream.CopyTo(ms);
+				        imageBytes = ms.ToArray();
+			        }
+		        }
+	        }
+
+	        if (imageBytes != null)
+	        {
+		        _playlist.image = Convert.ToBase64String(imageBytes);
+	        }
+	        
 	        /* TODO: Add image and description
 	        _playlist.image = 
             _playlist.playlistDescription = 
