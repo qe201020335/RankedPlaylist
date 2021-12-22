@@ -6,19 +6,26 @@ namespace RankedPlaylistGenerator.Models
 {
     public class Playlist
     {
-        [JsonProperty] public readonly string playlistTitle;
+        [JsonProperty("playlistTitle")]
+        public readonly string playlistTitle;
 
-        [JsonProperty] public readonly string playlistAuthor;
+        [JsonProperty("playlistAuthor")]
+        public readonly string playlistAuthor;
 
-        [JsonProperty] public List<Song> songs => GetSongs();
+        [JsonProperty("songs")]
+        public List<Song> songs => GetSongs();
 
-        [JsonProperty] public string image = "";
+        [JsonProperty("image")]
+        public string image = "";
         
-        [JsonProperty] public string playlistDescription = "";
+        [JsonProperty("playlistDescription")]
+        public string playlistDescription = "";
         
         // I hate duplicates in playlists, so 
+        [JsonIgnore]
         private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // hash: Song
 
+        [JsonIgnore]
         public int Size => _songs.Count;
         
         

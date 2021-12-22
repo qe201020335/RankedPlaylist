@@ -5,19 +5,19 @@ namespace RankedPlaylistGenerator.Models
 {
     public class Song
     {
-        [JsonProperty]
+        [JsonProperty("songName")]
         public readonly string songName;
 
-        [JsonProperty]
+        [JsonProperty("levelAuthorName")]
         public readonly string levelAuthorName;
 
-        [JsonProperty]
+        [JsonProperty("hash")]
         public readonly string hash;
 
-        [JsonProperty]
+        [JsonProperty("levelid")]
         public readonly string levelid;
 
-        [JsonProperty]
+        [JsonProperty("difficulties")]
         public readonly List<Difficulty> difficulties = new List<Difficulty>();
 
         public Song(string name, string author, string hash, string id)
