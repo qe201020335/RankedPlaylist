@@ -5,14 +5,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using RankedPlaylistGenerator.Models;
 using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
+using RankedPlaylist.RankedPlaylistGenerator.Models;
 
-namespace RankedPlaylistGenerator
+namespace RankedPlaylist.RankedPlaylistGenerator
 {
-	internal class RankedPlaylistGenerator
+	public class RankedPlaylistGenerator
     {
         private const string _baseURL = "http://scoresaber.com";
         private readonly HttpClient _client = new HttpClient();
@@ -24,20 +24,20 @@ namespace RankedPlaylistGenerator
 
         private Playlist _playlist;
 
-        internal RankedPlaylistGenerator(float minStar, float maxStar, int size)
+        public RankedPlaylistGenerator(float minStar, float maxStar, int size)
         {
 	        _minStar = minStar;
 	        _maxStar = maxStar;
 	        _maxSize = size;
         }
 
-        internal async Task<Playlist> Make()
+        public async Task<Playlist> Make()
         {
 	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
 	        byte[] imageBytes = null;
 	        
 	        // Code copied from PlaylistManager and PlaylistsLib
-	        using (Stream imageStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RankedPlaylistGenerator.Assets.PP_Stonks.png"))
+	        using (Stream imageStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RankedPlaylist.RankedPlaylistGenerator.Assets.PP_Stonks.png"))
 	        {
 		        if (imageStream == null || !imageStream.CanRead)
 			        imageBytes = null;
@@ -60,8 +60,7 @@ namespace RankedPlaylistGenerator
 		        _playlist.image = Convert.ToBase64String(imageBytes);
 	        }
 	        
-	        /* TODO: Add image and description
-	        _playlist.image = 
+	        /* TODO: Add description
             _playlist.playlistDescription = 
             */
             await Fetch();

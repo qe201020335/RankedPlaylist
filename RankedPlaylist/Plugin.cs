@@ -8,6 +8,7 @@ using IPA.Config.Stores;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
+using RankedPlaylist.RankedPlaylistGenerator;
 
 namespace RankedPlaylist
 {

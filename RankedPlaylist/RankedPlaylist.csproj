@@ -97,22 +97,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\RankedPlaylistGenerator\Models\Difficulty.cs">
-      <Link>RankedPlaylistGenerator\Models\Difficulty.cs</Link>
-    </Compile>
-    <Compile Include="..\RankedPlaylistGenerator\Models\Playlist.cs">
-      <Link>RankedPlaylistGenerator\Models\Playlist.cs</Link>
-    </Compile>
-    <Compile Include="..\RankedPlaylistGenerator\Models\Song.cs">
-      <Link>RankedPlaylistGenerator\Models\Song.cs</Link>
-    </Compile>
-    <Compile Include="..\RankedPlaylistGenerator\RankedPlaylistGenerator.cs">
-      <Link>RankedPlaylistGenerator\RankedPlaylistGenerator.cs</Link>
-    </Compile>
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="RankedPlaylistController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RankedPlaylistGenerator\Models\Difficulty.cs" />
+    <Compile Include="RankedPlaylistGenerator\Models\Playlist.cs" />
+    <Compile Include="RankedPlaylistGenerator\Models\Song.cs" />
+    <Compile Include="RankedPlaylistGenerator\RankedPlaylistGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -128,6 +120,9 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="RankedPlaylistGenerator\Assets\PP_Stonks.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

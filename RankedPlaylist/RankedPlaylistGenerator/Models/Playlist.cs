@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RankedPlaylistGenerator.Models
+namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
     public class Playlist
     {
@@ -23,7 +23,7 @@ namespace RankedPlaylistGenerator.Models
         
         // I hate duplicates in playlists, so 
         [JsonIgnore]
-        private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // hash: Song
+        private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // [hash]= Song
 
         [JsonIgnore]
         public int Size => _songs.Count;

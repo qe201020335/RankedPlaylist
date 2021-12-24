@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RankedPlaylistGenerator.Models
+namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
     public class Song
     {

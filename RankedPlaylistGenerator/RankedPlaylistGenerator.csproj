@@ -52,22 +52,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\Difficulty.cs" />
-    <Compile Include="Models\Playlist.cs" />
-    <Compile Include="Models\Song.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RankedPlaylistGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Common\Assets\PP_Stonks.png">
-      <Link>Assets\PP_Stonks.png</Link>
-    </EmbeddedResource>
     <Content Include="Icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RankedPlaylist\RankedPlaylist.csproj">
+      <Project>{bdd9a6ba-ef18-4a5b-a396-7cdb3413a3a4}</Project>
+      <Name>RankedPlaylist</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

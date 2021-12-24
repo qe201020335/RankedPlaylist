@@ -44,7 +44,7 @@ namespace RankedPlaylistGenerator
 		        Console.WriteLine("Invalid input");
 	        }
 	        
-	        var generator = new RankedPlaylistGenerator(minStar, maxStar, size);
+	        var generator = new RankedPlaylist.RankedPlaylistGenerator.RankedPlaylistGenerator(minStar, maxStar, size);
 	        var bplist = await generator.Make();
 	        var filename = $"Ranked {minStar}-{maxStar} {DateTimeOffset.Now.ToUnixTimeSeconds()}.bplist";
             
