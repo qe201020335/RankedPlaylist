@@ -1,0 +1,9 @@
+﻿<settings-container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                    xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
+                    xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
+    <slider-setting id="test-slider" text="Slide!" increment="0.1" min="0" max="15" integer-only="false" show-buttons="true"/>
+    <horizontal pad-top="1" pad-bottom="1">
+        <text id='test-text' text="Ranked Playlist Generator" italics="true" align="Center"/>
+    </horizontal>
+    <button id="test-button" text="Click!" on-click="on-click"/>
+</settings-container>

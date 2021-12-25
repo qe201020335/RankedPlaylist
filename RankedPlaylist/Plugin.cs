@@ -9,6 +9,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using IPALogger = IPA.Logging.Logger;
 using RankedPlaylist.RankedPlaylistGenerator;
+using BeatSaberMarkupLanguage.MenuButtons;
+using BeatSaberMarkupLanguage;
 
 namespace RankedPlaylist
 {
@@ -17,6 +19,9 @@ namespace RankedPlaylist
     {
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
+        
+        internal MenuButton MenuButton = new MenuButton("RankedPlaylist", "Get Some PP!", OnMenuButtonClick, true);
+        private UI.ConfigViewFlowCoordinator _configViewFlowCoordinator;
 
         [Init]
         /// <summary>
@@ -28,6 +33,7 @@ namespace RankedPlaylist
         {
             Instance = this;
             Log = logger;
+            Logger.logger = logger;
             Log.Info("RankedPlaylist initialized.");
         }
 
@@ -49,8 +55,10 @@ namespace RankedPlaylist
             Log.Debug("OnApplicationStart");
             new GameObject("RankedPlaylistController").AddComponent<RankedPlaylistController>();
 
-            var generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(5.5f, 8.5f, 500);
-            Log.Debug(generator.ToString());
+            // var generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(5.5f, 8.5f, 500);
+            // Log.Debug(generator.ToString());
+            
+            MenuButtons.instance.RegisterButton(MenuButton);
         }
 
         [OnExit]
@@ -58,6 +66,15 @@ namespace RankedPlaylist
         {
             Log.Debug("OnApplicationQuit");
 
+        }
+
+        private static void OnMenuButtonClick()
+        {
+            if (Instance._configViewFlowCoordinator == null)
+            {
+                Instance._configViewFlowCoordinator = BeatSaberUI.CreateFlowCoordinator<UI.ConfigViewFlowCoordinator>();
+            }
+            BeatSaberUI.MainFlowCoordinator.PresentFlowCoordinator(Instance._configViewFlowCoordinator);
         }
     }
 }

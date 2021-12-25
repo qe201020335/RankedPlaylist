@@ -40,6 +40,11 @@
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BSML, Version=1.5.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <Private>False</Private>
+      <HintPath>$(BeatSaberDir)\Plugins\BSML.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <Private>False</Private>
       <HintPath>$(BeatSaberDir)\Libs\Newtonsoft.Json.dll</HintPath>
@@ -97,6 +102,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logger.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="RankedPlaylistController.cs" />
@@ -107,6 +113,8 @@
     <Compile Include="RankedPlaylistGenerator\Models\Playlist.cs" />
     <Compile Include="RankedPlaylistGenerator\Models\Song.cs" />
     <Compile Include="RankedPlaylistGenerator\RankedPlaylistGenerator.cs" />
+    <Compile Include="UI\ConfigViewFlowCoordinator.cs" />
+    <Compile Include="UI\SettingMenuController.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="manifest.json" />
@@ -125,6 +133,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="RankedPlaylistGenerator\Assets\PP_Stonks.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\BSML\menu.bsml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
