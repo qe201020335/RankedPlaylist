@@ -1,9 +1,24 @@
 ﻿<settings-container xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
                     xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
                     xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
-    <slider-setting id="test-slider" text="Slide!" increment="0.1" min="0" max="15" integer-only="false" show-buttons="true"/>
-    <horizontal pad-top="1" pad-bottom="1">
-        <text id='test-text' text="Ranked Playlist Generator" italics="true" align="Center"/>
-    </horizontal>
-    <button id="test-button" text="Click!" on-click="on-click"/>
+    
+    <vertical child-control-height="false" spacing="2">
+        <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5' pad-top='2'>
+            <sliderwb-setting value="max-star" text="Max Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true"/>
+            <sliderwb-setting value="min-star" text="Min Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true"/>
+            <sliderwb-setting value="size" text="Max Size (Roughly)" increment="10" min="20" max="800" integer-only="true" apply-on-change="true"/>
+            
+            <horizontal pad="1">
+                <button id="generate-button" text="Generate!" on-click="on-generate-click"/>
+            </horizontal>
+        </vertical>
+        <vertical pad-top="12" spacing="2">
+            <horizontal horizontal-fit='PreferredSize' child-control-width="true">
+                <text id='info-text' text="" italics="true" align="Center"/>
+            </horizontal>
+            <horizontal horizontal-fit='PreferredSize' child-control-width="true">
+                <text id='info-text2' text="" italics="true" align="Center"/>
+            </horizontal>
+        </vertical>
+    </vertical>
 </settings-container>
