@@ -9,12 +9,14 @@ using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography;
 using RankedPlaylist.RankedPlaylistGenerator.Models;
+using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventArgs;
+using RankedPlaylist.RankedPlaylistGenerator.Events;
 
 namespace RankedPlaylist.RankedPlaylistGenerator
 {
 	public class RankedPlaylistGenerator
     {
-        private const string _baseURL = "http://scoresaber.com";
+	    private const string _baseURL = "http://scoresaber.com";
         private readonly HttpClient _client = new HttpClient();
 
         private readonly float _minStar;
@@ -23,6 +25,9 @@ namespace RankedPlaylist.RankedPlaylistGenerator
         private readonly int _maxSize;
 
         private Playlist _playlist;
+
+        public event EventHandler<ErrorEventArgs> OnError;
+        public event EventHandler<SongAddEventArgs> OnSongAdd;
 
         public RankedPlaylistGenerator(float minStar, float maxStar, int size)
         {
@@ -34,6 +39,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
         public async Task<Playlist> Make()
         {
 	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
+	        _playlist.OnSongAdd += OnSongAddBroadcastPassThrough;
 	        byte[] imageBytes = null;
 	        
 	        // Code copied from PlaylistManager and PlaylistsLib
@@ -70,7 +76,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 
         private async Task Fetch()
         {
-            Console.WriteLine("Fetching...");
+            // Console.WriteLine("Fetching...");
             
             // _playlist.AddSong(
             //     "Daisuki, Evolution", 
@@ -132,8 +138,8 @@ namespace RankedPlaylist.RankedPlaylistGenerator
                 response = await FetchPage(page);
             }
 
-            Console.WriteLine("Fetch Done");
-            Console.WriteLine($"{size} maps/difficulties");
+            // Console.WriteLine("Fetch Done");
+            // Console.WriteLine($"{size} maps/difficulties");
         }
 
         private void AddSong(JToken map)
@@ -183,7 +189,8 @@ namespace RankedPlaylist.RankedPlaylistGenerator
                 // there is nothing without song hash
                 return;
             }
-            Console.WriteLine($"{songName} - {author}");
+
+            // Console.WriteLine($"{songName} - {author}");
             var id = "custom_level_" + hash;
             
             // Then check the difficult
@@ -245,9 +252,43 @@ namespace RankedPlaylist.RankedPlaylistGenerator
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+	            Console.Error.WriteLine(e);
+	            OnErrorBroadcast(e);
                 return null;
             }
         }
+        
+        private void OnSongAddBroadcastPassThrough(Object sender, SongAddEventArgs eventArgs)
+        {
+	        try
+	        {
+		        EventHandler<SongAddEventArgs> handler = OnSongAdd;
+		        handler?.Invoke(this, eventArgs);
+	        }
+	        catch (Exception e)
+	        {
+		        // Exception during event broadcast
+		        Console.Error.WriteLine(e);
+	        }
+        }
+        
+        private void OnErrorBroadcast(Exception exception)
+        {
+	        var eventArgs = new ErrorEventArgs
+	        {
+		        Exception = exception
+	        };
+	        try
+	        {
+		        EventHandler<ErrorEventArgs> handler = OnError;
+		        handler?.Invoke(this, eventArgs);
+	        }
+	        catch (Exception e)
+	        {
+		        // bruh, Really?
+		        Console.Error.WriteLine(e);
+	        }
+        }
+        
     }
 }

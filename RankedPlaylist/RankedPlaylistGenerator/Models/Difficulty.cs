@@ -10,7 +10,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         [JsonProperty("name")]
         public readonly string name;
         
-        public Difficulty(string mode, string difficulty)
+        internal Difficulty(string mode, string difficulty)
         {
             characteristic = mode;
             name = difficulty;

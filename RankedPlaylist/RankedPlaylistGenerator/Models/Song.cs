@@ -20,7 +20,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         [JsonProperty("difficulties")]
         public readonly List<Difficulty> difficulties = new List<Difficulty>();
 
-        public Song(string name, string author, string hash, string id)
+        internal Song(string name, string author, string hash, string id)
         {
             songName = name;
             levelAuthorName = author;
@@ -28,7 +28,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
             levelid = id;
         }
         
-        public Song(string name, string author, string hash, string id, string mode, string difficulty)
+        internal Song(string name, string author, string hash, string id, string mode, string difficulty)
         {
             songName = name;
             levelAuthorName = author;
@@ -37,9 +37,11 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
             AddDifficulty(mode, difficulty);
         }
 
-        public void AddDifficulty(string mode, string difficulty)
+        internal Difficulty AddDifficulty(string mode, string difficulty)
         {
-            difficulties.Add(new Difficulty(mode, difficulty));
+            var diff = new Difficulty(mode, difficulty);
+            difficulties.Add(diff);
+            return diff;
         }
     }
 }

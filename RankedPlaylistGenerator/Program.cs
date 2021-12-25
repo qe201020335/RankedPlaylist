@@ -2,11 +2,23 @@
 using System.IO;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using RankedPlaylist.RankedPlaylistGenerator.Events;
+using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventArgs;
 
 namespace RankedPlaylistGenerator
 {
     internal static class Program
     {
+	    private static void OnSongAdd(Object sender, SongAddEventArgs eventArgs)
+	    {
+		    Console.WriteLine($"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}");
+	    }
+	    
+	    private static void OnError(Object sender, ErrorEventArgs eventArgs)
+	    {
+		    Console.Error.WriteLine(eventArgs.Exception);
+	    }
+	    
 	    private static bool ScanFloat(out float f, string prompt)
         {
 	        Console.Write(prompt);
@@ -45,6 +57,9 @@ namespace RankedPlaylistGenerator
 	        }
 	        
 	        var generator = new RankedPlaylist.RankedPlaylistGenerator.RankedPlaylistGenerator(minStar, maxStar, size);
+	        generator.OnError += OnError;
+	        generator.OnSongAdd += OnSongAdd;
+
 	        var bplist = await generator.Make();
 	        var filename = $"Ranked {minStar}-{maxStar} {DateTimeOffset.Now.ToUnixTimeSeconds()}.bplist";
             

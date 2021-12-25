@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using RankedPlaylist.RankedPlaylistGenerator.Events;
 
 namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
@@ -28,31 +29,60 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         [JsonIgnore]
         public int Size => _songs.Count;
         
+        internal event EventHandler<SongAddEventArgs> OnSongAdd;
+        
         
 
-        public Playlist(string title, string author)
+        internal Playlist(string title, string author)
         {
             playlistAuthor = author;
             playlistTitle = title;
         }
         
-        public void AddSong(string name, string author, string hash, string id)
+        internal void AddSong(string name, string author, string hash, string id)
         {
             if (!_songs.ContainsKey(hash))
             {
-                _songs[hash] = new Song(name, author, hash, id);
+                var song =  new Song(name, author, hash, id);
+                _songs[hash] = song;
+                OnSongAddBroadcast(song, null);
             }
         }
 
-        public void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
+        internal void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
         {
+            Song song;
             if (_songs.ContainsKey(hash))
             {
-                _songs[hash].AddDifficulty(mode, difficulty);
+                song = _songs[hash];
             }
             else
             {
-                _songs[hash] = new Song(name, author, hash, id, mode, difficulty);
+                song = new Song(name, author, hash, id);
+                _songs[hash] = song;
+            }
+
+            var diff = song.AddDifficulty(mode, difficulty);
+            OnSongAddBroadcast(song, diff);
+
+        }
+
+        private void OnSongAddBroadcast(Song song, Difficulty difficulty)
+        {
+            var songAddEventArgs = new SongAddEventArgs
+            {
+                Difficulty = difficulty,
+                Song = song
+            };
+            try
+            {
+                EventHandler<SongAddEventArgs> handler = OnSongAdd;
+                handler?.Invoke(this, songAddEventArgs);
+            }
+            catch (Exception e)
+            {
+                // bruh, Exception during event broadcast
+                Console.Error.WriteLine(e);
             }
         }
 

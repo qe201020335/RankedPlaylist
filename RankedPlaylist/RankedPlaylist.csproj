@@ -101,6 +101,8 @@
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="RankedPlaylistController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RankedPlaylistGenerator\Events\ErrorEventArgs.cs" />
+    <Compile Include="RankedPlaylistGenerator\Events\SongAddEventArgs.cs" />
     <Compile Include="RankedPlaylistGenerator\Models\Difficulty.cs" />
     <Compile Include="RankedPlaylistGenerator\Models\Playlist.cs" />
     <Compile Include="RankedPlaylistGenerator\Models\Song.cs" />
