@@ -16,7 +16,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 {
 	public class RankedPlaylistGenerator
     {
-	    private const string _baseURL = "http://scoresaber.com";
+	    private const string _baseURL = "https://scoresaber.com";
         private readonly HttpClient _client = new HttpClient();
 
         private readonly float _minStar;
