@@ -41,6 +41,8 @@ namespace RankedPlaylist.UI
         [UIAction("on-generate-click")]
         private void OnGenerateClick()
         {
+            // _infoText.text = "test text 1";
+            // _infoText2.text = "test text long long long long long long long long long long long long long long long long long long long long long long long long";
             if (_worker != null && _worker.IsAlive)
             {
                 Logger.logger.Warn("Previous run of RankedPlaylist is still running!");
@@ -51,7 +53,7 @@ namespace RankedPlaylist.UI
             _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size);
             _generator.OnSongAdd += OnSongAdd;
             _generator.OnError += OnError;
-
+            
             _worker = new Thread(Generate);
             
             _worker.Start();
