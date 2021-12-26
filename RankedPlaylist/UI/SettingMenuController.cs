@@ -1,7 +1,7 @@
 ﻿using System;
 using BeatSaberMarkupLanguage.Attributes;
 using System.IO;
-using System.Threading;
+using System.Threading.Tasks;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using Newtonsoft.Json.Linq;
@@ -19,7 +19,7 @@ namespace RankedPlaylist.UI
     {
         private RankedPlaylistGenerator.RankedPlaylistGenerator _generator;
 
-        private Thread _worker;
+        private bool _running = false;
 
         [UIParams] private BSMLParserParams parserParams;
 
@@ -34,25 +34,15 @@ namespace RankedPlaylist.UI
         [UIComponent("info-text2")] private TextMeshProUGUI _infoText2;
 
         [UIAction("on-generate-click")]
-        private void OnGenerateClick()
+        private async void OnGenerateClick()
         {
             SaveValues();
             // _infoText.text = "test text 1";
             // _infoText2.text = "test text long long long long long long long long long long long long long long long long long long long long long long long long";
-            if (_worker != null && _worker.IsAlive)
-            {
-                Logger.logger.Warn("Previous run of RankedPlaylist is still running!");
-                return;
-            }
             
-            Logger.logger.Debug($"{_minStar}, {_maxStar}, {_size}");
-            _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size);
-            _generator.OnSongAdd += OnSongAdd;
-            _generator.OnError += OnError;
+            await Generate();
             
-            _worker = new Thread(Generate);
-            
-            _worker.Start();
+            Logger.logger.Debug("Done");
 
         }
 
@@ -65,7 +55,6 @@ namespace RankedPlaylist.UI
 
         private void OnSongAdd(Object sender, SongAddEventArgs eventArgs)
         {
-
             var text = eventArgs.Difficulty == null
                 ? $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}"
                 : $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName} : {eventArgs.Difficulty.name}";
@@ -76,7 +65,6 @@ namespace RankedPlaylist.UI
             {
                 Logger.logger.Debug(text);
             }
-
         }
 	    
         private void OnError(Object sender, ErrorEventArgs eventArgs)
@@ -118,12 +106,44 @@ namespace RankedPlaylist.UI
             }
         }
 
-        private async void Generate()
+        private async Task Generate()
         {
+            if (_running)
+            {
+                Logger.logger.Warn("Previous run of RankedPlaylist is still running!");
+                return;
+            }
+
+            _running = true;
+            Logger.logger.Debug($"{_minStar}, {_maxStar}, {_size}");
+            _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size);
+            _generator.OnSongAdd += OnSongAdd;
+            _generator.OnError += OnError;
+            
             Logger.logger.Info("Start Fetching Ranked Songs");
             _infoText.text = "Fetching...";
-            var playlist = await _generator.Make();
-            OnPlaylistGenerated(playlist);
-        } 
+            try
+            {
+                var playlist = await _generator.Make();
+                OnPlaylistGenerated(playlist);
+            }
+            catch (Exception e)
+            {
+                _infoText.text = "Error Occured: ";
+                _infoText2.text = e.Message;
+                Logger.logger.Critical("Error Occured while fetching ranked playlist.");
+                Logger.logger.Critical(e);
+            }
+            finally
+            {
+                _running = false;
+            }
+        }
+
+        // [UIAction("test-button")]
+        // private void TestButtonPress()
+        // {
+        //     Logger.logger.Debug("Test Test");
+        // }
     }
 }

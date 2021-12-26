@@ -10,6 +10,7 @@
             
             <horizontal pad="1">
                 <button id="generate-button" text="Generate!" on-click="on-generate-click"/>
+<!--                <button id="test-button" text="test" on-click="test-button"/>-->
             </horizontal>
         </vertical>
         <horizontal horizontal-fit='PreferredSize' pad-top="1">
