@@ -20,7 +20,7 @@ namespace RankedPlaylist
         internal static Plugin Instance { get; private set; }
         internal static IPALogger Log { get; private set; }
         
-        internal MenuButton MenuButton = new MenuButton("RankedPlaylist", "Get Some PP!", OnMenuButtonClick, true);
+        internal MenuButton MenuButton = new MenuButton("Ranked Playlist", "Get Some PP!", OnMenuButtonClick, true);
         private UI.ConfigViewFlowCoordinator _configViewFlowCoordinator;
 
         [Init]
@@ -39,24 +39,21 @@ namespace RankedPlaylist
 
         #region BSIPA Config
         //Uncomment to use BSIPA's config
-        /*
+        
         [Init]
-        public void InitWithConfig(Config conf)
+        public void InitWithConfig(IPA.Config.Config conf)
         {
             Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Log.Debug("Config loaded");
         }
-        */
+        
         #endregion
 
         [OnStart]
         public void OnApplicationStart()
         {
             Log.Debug("OnApplicationStart");
-            new GameObject("RankedPlaylistController").AddComponent<RankedPlaylistController>();
-
-            // var generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(5.5f, 8.5f, 500);
-            // Log.Debug(generator.ToString());
+            // new GameObject("RankedPlaylistController").AddComponent<RankedPlaylistController>();
             
             MenuButtons.instance.RegisterButton(MenuButton);
         }
@@ -65,7 +62,6 @@ namespace RankedPlaylist
         public void OnApplicationQuit()
         {
             Log.Debug("OnApplicationQuit");
-
         }
 
         private static void OnMenuButtonClick()

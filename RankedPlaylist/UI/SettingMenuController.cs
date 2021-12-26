@@ -5,6 +5,7 @@ using System.Threading;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
 using Newtonsoft.Json.Linq;
+using RankedPlaylist.Configuration;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 using RankedPlaylist.RankedPlaylistGenerator.Models;
 using TMPro;
@@ -19,28 +20,23 @@ namespace RankedPlaylist.UI
         private RankedPlaylistGenerator.RankedPlaylistGenerator _generator;
 
         private Thread _worker;
-        
-        [UIParams]
-        private BSMLParserParams parserParams;
 
-        [UIValue("max-star")]
-        private float _maxStar = 7;
+        [UIParams] private BSMLParserParams parserParams;
 
-        [UIValue("min-star")]
-        private float _minStar = 5;
+        [UIValue("max-star")] private float _maxStar = PluginConfig.Instance.MaxStar;
 
-        [UIValue("size")]
-        private int _size = 50;
+        [UIValue("min-star")] private float _minStar = PluginConfig.Instance.MinStar;
 
-        [UIComponent("info-text")]
-        private TextMeshProUGUI _infoText;
-        
-        [UIComponent("info-text2")]
-        private TextMeshProUGUI _infoText2;
+        [UIValue("size")] private int _size = PluginConfig.Instance.Size;
+
+        [UIComponent("info-text")] private TextMeshProUGUI _infoText;
+
+        [UIComponent("info-text2")] private TextMeshProUGUI _infoText2;
 
         [UIAction("on-generate-click")]
         private void OnGenerateClick()
         {
+            SaveValues();
             // _infoText.text = "test text 1";
             // _infoText2.text = "test text long long long long long long long long long long long long long long long long long long long long long long long long";
             if (_worker != null && _worker.IsAlive)
@@ -60,14 +56,27 @@ namespace RankedPlaylist.UI
 
         }
 
+        private void SaveValues()
+        {
+            PluginConfig.Instance.MaxStar = _maxStar;
+            PluginConfig.Instance.MinStar = _minStar;
+            PluginConfig.Instance.Size = _size;
+        }
+
         private void OnSongAdd(Object sender, SongAddEventArgs eventArgs)
         {
-            _infoText2.text = $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}";
 
-#if DEBUG
-            Logger.logger.Debug($"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}");
-#endif
-            
+            var text = eventArgs.Difficulty == null
+                ? $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}"
+                : $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName} : {eventArgs.Difficulty.name}";
+
+            _infoText2.text = text;
+
+            if (PluginConfig.Instance.DebugLogSpam)
+            {
+                Logger.logger.Debug(text);
+            }
+
         }
 	    
         private void OnError(Object sender, ErrorEventArgs eventArgs)

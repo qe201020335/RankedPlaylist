@@ -1,5 +1,4 @@
-﻿/*
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
@@ -8,8 +7,17 @@ namespace RankedPlaylist.Configuration
     internal class PluginConfig
     {
         public static PluginConfig Instance { get; set; }
-        public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
+        // public virtual int IntValue { get; set; } = 42; // Must be 'virtual' if you want BSIPA to detect a value change and save the config automatically.
 
+        public virtual float MaxStar { get; set; } = 7;
+
+        public virtual float MinStar { get; set; } = 5;
+
+        public virtual int Size { get; set; } = 50;
+
+        public virtual bool DebugLogSpam { get; set; } = false;
+        
+        /*
         /// <summary>
         /// This is called whenever BSIPA reads the config from disk (including when file changes are detected).
         /// </summary>
@@ -33,6 +41,6 @@ namespace RankedPlaylist.Configuration
         {
             // This instance's members populated from other
         }
+        */
     }
 }
-*/
