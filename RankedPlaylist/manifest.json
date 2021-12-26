@@ -3,7 +3,7 @@
   "id": "RankedPlaylist",
   "name": "RankedPlaylist",
   "author": "qe201020335",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate a playlist of ranked songs base on options",
   "gameVersion": "1.19.0",
   "dependsOn": {
