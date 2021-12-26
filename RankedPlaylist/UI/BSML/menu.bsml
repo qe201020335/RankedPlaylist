@@ -2,7 +2,7 @@
                     xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
                     xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
     
-    <vertical vertical-fit="PreferredSize" spacing="1.5" pad-top="2" horizontal-fit="PreferredSize">
+    <vertical spacing="1.5" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
         <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5'>
             <slider-setting value="max-star" text="Max Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
             <slider-setting value="min-star" text="Min Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
@@ -13,7 +13,7 @@
             </horizontal>
         </vertical>
         <horizontal horizontal-fit='PreferredSize' pad-top="1">
-            <text id='info-text' text="Use the filters above ↑..." italics="false" align="Center"/>
+            <text id='info-text' text="Use the filters above ↑" italics="false" align="Center"/>
         </horizontal>
         <horizontal horizontal-fit='PreferredSize'>
             <text id='info-text2' text="...and get some ranked playlists!" italics="true" align="Center"/>

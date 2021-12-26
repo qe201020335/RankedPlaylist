@@ -12,10 +12,10 @@ using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventA
 
 namespace RankedPlaylist.UI
 {
-    internal class SettingMenuController : BSMLResourceViewController
+    [HotReload(RelativePathToLayout = @"BSML\menu.bsml")]
+    [ViewDefinition("RankedPlaylist.UI.BSML.menu.bsml")]
+    internal class SettingMenuController : BSMLAutomaticViewController
     {
-        public override string ResourceName => "RankedPlaylist.UI.BSML.menu.bsml";
-        
         private RankedPlaylistGenerator.RankedPlaylistGenerator _generator;
 
         private Thread _worker;
