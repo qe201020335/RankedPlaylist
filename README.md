@@ -1,10 +1,9 @@
 # RankedPlaylist
 Beat Saber ranked playlist generator.
 
-## Standalone Version
-Use this is you are playing the quest version of Beat Saber!
-
 ## PC MOD
+This is for the **PC** version of Beat Saber (Steam/Oculus). If you are playing the quest version, please see the [Standalone Version](#standalone-version) below.
+
 ### Mod Requirements
 These can be downloaded from [BeatMods](https://beatmods.com/#/mods) or using [Mod Assistant](https://github.com/Assistant/ModAssistant/releases/latest).
 
@@ -21,4 +20,18 @@ Technically this mod doesn't depend on PlaylistManager, but without it you won't
 3. Run the game and you will see the button ***Ranked Playlist***.
 4. After genearting a playlist, you can download the songs using [PlaylistManager](https://github.com/rithik-b/PlaylistManager).
 
+## Standalone Version
+Use this is you are playing the quest version of Beat Saber!
 
+1. Download the **standalone** one from the [latest release](https://github.com/qe201020335/RankedPlaylist/releases/latest).
+2. Extract the archive and run `RankedPlaylistGenerator.exe`.
+3. Follow the options and you will have a `bplist` file!
+4. Drag the generated playlist into the upload page of your BMBF.
+
+Currently this only works on Windows. I'm thinking about making a web version of this generator so you can use it anywhere.
+
+## TODO
+1. Allow filter by the songs you have or have not played. 
+2. Allow filter by the percentage of your played song
+
+Please open an [issue](https://github.com/qe201020335/RankedPlaylist/issues) if you found something wrong or want to request a feature!
