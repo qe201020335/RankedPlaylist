@@ -1,69 +1,96 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.IO;
+using BeatSaberPlaylistsLib;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 
 namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
     public class Playlist
     {
-        [JsonProperty("playlistTitle")]
+        // [JsonProperty("playlistTitle")]
         public readonly string playlistTitle;
 
-        [JsonProperty("playlistAuthor")]
+        // [JsonProperty("playlistAuthor")]
         public readonly string playlistAuthor;
 
-        [JsonProperty("songs")]
-        public List<Song> songs => GetSongs();
+        // [JsonProperty("songs")]
+        // public List<Song> songs => GetSongs();
 
-        [JsonProperty("image")]
-        public string image = "";
+        // [JsonProperty("image")]
+        // public string image = "";
         
-        [JsonProperty("playlistDescription")]
-        public string playlistDescription = "";
+        // [JsonProperty("playlistDescription")]
+        // public string playlistDescription = "";
         
         // I hate duplicates in playlists, so 
-        [JsonIgnore]
-        private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // [hash]= Song
+        // [JsonIgnore]
+        // private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // [hash]= Song
 
-        [JsonIgnore]
-        public int Size => _songs.Count;
-        
+        // [JsonIgnore]
+        public int Size => 0;
+
+        public string FileName
+        {
+            get => _playlist.Filename;
+            set
+            {
+                _playlist.Filename = value;
+            }
+        }
+
         internal event EventHandler<SongAddEventArgs> OnSongAdd;
         
-        
+        private PlaylistManager _playlistManager = PlaylistManager.DefaultManager;
+
+        private BeatSaberPlaylistsLib.Types.IPlaylist _playlist;
+
 
         internal Playlist(string title, string author)
         {
             playlistAuthor = author;
             playlistTitle = title;
+            _playlist = _playlistManager.CreatePlaylist("", title, author, "");
+            
+            // I hate duplicates in playlists, so 
+            _playlist.AllowDuplicates = false;
         }
-        
+
+        internal void SetImage(Stream stream)
+        {
+            _playlist.SetCover(stream);
+        }
+
+        public void SavePlaylist()
+        {
+            _playlistManager.StorePlaylist(_playlist);
+        }
+
         internal void AddSong(string name, string author, string hash, string id)
         {
-            if (!_songs.ContainsKey(hash))
-            {
-                var song =  new Song(name, author, hash, id);
-                _songs[hash] = song;
-                OnSongAddBroadcast(song, null);
-            }
+            // if (!_songs.ContainsKey(hash))
+            // {
+            //     var song =  new Song(name, author, hash, id);
+            //     _songs[hash] = song;
+            //     OnSongAddBroadcast(song, null);
+            // }
         }
 
         internal void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
         {
-            Song song;
-            if (_songs.ContainsKey(hash))
-            {
-                song = _songs[hash];
-            }
-            else
-            {
-                song = new Song(name, author, hash, id);
-                _songs[hash] = song;
-            }
-
-            var diff = song.AddDifficulty(mode, difficulty);
-            OnSongAddBroadcast(song, diff);
+            // Song song;
+            // if (_songs.ContainsKey(hash))
+            // {
+            //     song = _songs[hash];
+            // }
+            // else
+            // {
+            //     song = new Song(name, author, hash, id);
+            //     _songs[hash] = song;
+            // }
+            //
+            // var diff = song.AddDifficulty(mode, difficulty);
+            // OnSongAddBroadcast(song, diff);
 
         }
 
@@ -86,10 +113,10 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
             }
         }
 
-        private List<Song> GetSongs()
-        {
-            return new List<Song>(_songs.Values);
-        }
+        // private List<Song> GetSongs()
+        // {
+        //     return new List<Song>(_songs.Values);
+        // }
     }
     
 }

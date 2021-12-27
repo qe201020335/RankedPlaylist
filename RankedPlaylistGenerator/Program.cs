@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventArgs;
 
@@ -61,16 +60,17 @@ namespace RankedPlaylistGenerator
 	        generator.OnSongAdd += OnSongAdd;
 
 	        var bplist = await generator.Make();
-	        var filename = $"Ranked {minStar}-{maxStar} {DateTimeOffset.Now.ToUnixTimeSeconds()}.bplist";
+	        var filename = $"__RankedPlaylist_generated_{DateTimeOffset.Now.ToUnixTimeSeconds()} {minStar}-{maxStar}";
             
 	        Console.WriteLine("\n\n================ Write out bplist ================\n\n");
-	        Console.WriteLine(filename);
+	        
 	        Console.WriteLine($"Size {bplist.Size}");
-            
-	        File.WriteAllText(filename, JObject.FromObject(bplist).ToString());
-	        
-	        
-            // Console.Beep();
+
+	        bplist.FileName = filename;
+	        bplist.SavePlaylist();
+	        Console.WriteLine(bplist.FileName);
+
+	        // Console.Beep();
             Console.WriteLine("Done \a");
             Console.WriteLine("Press Enter to Finish...");
             Console.ReadLine();

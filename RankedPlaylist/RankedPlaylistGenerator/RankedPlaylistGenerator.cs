@@ -40,36 +40,20 @@ namespace RankedPlaylist.RankedPlaylistGenerator
         {
 	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
 	        _playlist.OnSongAdd += OnSongAddBroadcastPassThrough;
-	        byte[] imageBytes = null;
-	        
+
 	        // Code copied from PlaylistManager and PlaylistsLib
 	        using (Stream imageStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RankedPlaylist.RankedPlaylistGenerator.Assets.PP_Stonks.png"))
 	        {
-		        if (imageStream == null || !imageStream.CanRead)
-			        imageBytes = null;
-		        else if (imageStream is MemoryStream cast)
+		        if (imageStream != null)
 		        {
-			        imageBytes = cast.ToArray();
-		        }
-		        else
-		        {
-			        using (MemoryStream ms = new MemoryStream())
-			        {
-				        imageStream.CopyTo(ms);
-				        imageBytes = ms.ToArray();
-			        }
+			        _playlist.SetImage(imageStream);
 		        }
 	        }
 
-	        if (imageBytes != null)
-	        {
-		        _playlist.image = Convert.ToBase64String(imageBytes);
-	        }
-	        
 	        /* TODO: Add description
             _playlist.playlistDescription = 
             */
-            await Fetch();
+            // await Fetch();
 
             return _playlist;
         }
@@ -289,6 +273,6 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 		        Console.Error.WriteLine(e);
 	        }
         }
-        
+
     }
 }
