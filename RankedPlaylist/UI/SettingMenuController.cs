@@ -4,7 +4,6 @@ using System.IO;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
-using Newtonsoft.Json.Linq;
 using RankedPlaylist.Configuration;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 using RankedPlaylist.RankedPlaylistGenerator.Models;
@@ -80,19 +79,14 @@ namespace RankedPlaylist.UI
             _infoText.text = "Writing Playlist File...";
             _infoText2.text = "Writing Playlist File...";
             
-            var bplist = JObject.FromObject(playlist);
-            
             // Write to file
             try
             {
-                var playlistDirectory = Path.GetFullPath("Playlists");
-                Logger.logger.Debug(playlistDirectory);
-                
-                var path = Path.Combine(playlistDirectory, "__RankedPlaylist_generated.bplist");
+                var fileName = "__RankedPlaylist_generated";
                 Logger.logger.Info("Writing Playlist");
-                Logger.logger.Debug(path);
-                File.WriteAllText(path, JObject.FromObject(bplist).ToString());
-
+                Logger.logger.Debug(fileName);
+                playlist.FileName = fileName;
+                playlist.SavePlaylist();
                 _infoText.text = "Playlist Generated!";
                 _infoText2.text = $"{playlist.Size} maps in total.";
                 Logger.logger.Info($"Playlist generated with {playlist.Size} maps.");

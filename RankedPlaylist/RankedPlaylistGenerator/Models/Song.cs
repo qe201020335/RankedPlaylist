@@ -1,23 +1,17 @@
 ﻿using System.Collections.Generic;
-using Newtonsoft.Json;
 
 namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
     public class Song
     {
-        [JsonProperty("songName")]
         public readonly string songName;
 
-        [JsonProperty("levelAuthorName")]
         public readonly string levelAuthorName;
 
-        [JsonProperty("hash")]
         public readonly string hash;
 
-        [JsonProperty("levelid")]
         public readonly string levelid;
 
-        [JsonProperty("difficulties")]
         public readonly List<Difficulty> difficulties = new List<Difficulty>();
 
         internal Song(string name, string author, string hash, string id)
