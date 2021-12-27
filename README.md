@@ -11,6 +11,7 @@ Alternatively, you can also download them from their github repo.
 * [BSIPA](https://github.com/bsmg/BeatSaber-IPA-Reloaded)
 * [BSML](https://github.com/monkeymanboy/BeatSaberMarkupLanguage)
 * [PlaylistManager](https://github.com/rithik-b/PlaylistManager)
+* [BeatSaberPlaylistsLib](https://github.com/Zingabopp/BeatSaberPlaylistsLib) (Included by PlaylistManager)
 
 Technically this mod doesn't depend on PlaylistManager, but without it you won't be able to see the playlist and download the songs.
 
