@@ -55,20 +55,18 @@ namespace RankedPlaylistGenerator
 		        Console.WriteLine("Invalid input");
 	        }
 	        
-	        var generator = new RankedPlaylist.RankedPlaylistGenerator.RankedPlaylistGenerator(minStar, maxStar, size);
+	        var filename = $"__RankedPlaylist_generated_{DateTimeOffset.Now.ToUnixTimeSeconds()} {minStar}-{maxStar}";
+	        var generator = new RankedPlaylist.RankedPlaylistGenerator.RankedPlaylistGenerator(minStar, maxStar, size, filename);
 	        generator.OnError += OnError;
 	        generator.OnSongAdd += OnSongAdd;
 
-	        var bplist = await generator.Make();
-	        var filename = $"__RankedPlaylist_generated_{DateTimeOffset.Now.ToUnixTimeSeconds()} {minStar}-{maxStar}";
+	        var count = await generator.Make();
+	        
             
 	        Console.WriteLine("\n\n================ Write out bplist ================\n\n");
 	        
-	        Console.WriteLine($"Size {bplist.Size}");
-
-	        bplist.FileName = filename;
-	        bplist.SavePlaylist();
-	        Console.WriteLine(bplist.FileName);
+	        Console.WriteLine($"Size {count}");
+	        Console.WriteLine(filename);
 
 	        // Console.Beep();
             Console.WriteLine("Done \a");

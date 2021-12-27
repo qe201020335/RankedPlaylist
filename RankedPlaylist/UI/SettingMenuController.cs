@@ -74,32 +74,6 @@ namespace RankedPlaylist.UI
             Logger.logger.Critical(eventArgs.Exception);
         }
 
-        private void OnPlaylistGenerated(Playlist playlist)
-        {
-            _infoText.text = "Writing Playlist File...";
-            _infoText2.text = "Writing Playlist File...";
-            
-            // Write to file
-            try
-            {
-                var fileName = "__RankedPlaylist_generated";
-                Logger.logger.Info("Writing Playlist");
-                Logger.logger.Debug(fileName);
-                playlist.FileName = fileName;
-                playlist.SavePlaylist();
-                _infoText.text = "Playlist Generated!";
-                _infoText2.text = $"{playlist.Size} maps in total.";
-                Logger.logger.Info($"Playlist generated with {playlist.Size} maps.");
-            }
-            catch (Exception e)
-            {
-                _infoText.text = "Error Occured: ";
-                _infoText2.text = e.Message;
-                Logger.logger.Critical("Error Occured while fetching ranked playlist.");
-                Logger.logger.Critical(e);
-            }
-        }
-
         private async Task Generate()
         {
             if (_running)
@@ -107,10 +81,9 @@ namespace RankedPlaylist.UI
                 Logger.logger.Warn("Previous run of RankedPlaylist is still running!");
                 return;
             }
-
             _running = true;
             Logger.logger.Debug($"{_minStar}, {_maxStar}, {_size}");
-            _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size);
+            _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size, "__RankedPlaylist_generated");
             _generator.OnSongAdd += OnSongAdd;
             _generator.OnError += OnError;
             
@@ -118,8 +91,10 @@ namespace RankedPlaylist.UI
             _infoText.text = "Fetching...";
             try
             {
-                var playlist = await _generator.Make();
-                OnPlaylistGenerated(playlist);
+                var count = await _generator.Make();
+                _infoText.text = "Playlist Generated!";
+                _infoText2.text = $"{count} maps in total.";
+                Logger.logger.Info($"Playlist generated with {count} maps.");
             }
             catch (Exception e)
             {

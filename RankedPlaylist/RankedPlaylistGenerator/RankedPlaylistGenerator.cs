@@ -23,21 +23,24 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 
         private readonly int _maxSize;
 
+        private readonly string _filename;
+
         private Playlist _playlist;
 
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler<SongAddEventArgs> OnSongAdd;
 
-        public RankedPlaylistGenerator(float minStar, float maxStar, int size)
+        public RankedPlaylistGenerator(float minStar, float maxStar, int size, string filename)
         {
 	        _minStar = minStar;
 	        _maxStar = maxStar;
 	        _maxSize = size;
+	        _filename = filename;
         }
 
-        public async Task<Playlist> Make()
+        public async Task<int> Make()
         {
-	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
+	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator", _filename);
 	        _playlist.OnSongAdd += OnSongAddBroadcastPassThrough;
 
 	        // Code copied from PlaylistManager and PlaylistsLib
@@ -50,11 +53,13 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 	        }
 
 	        /* TODO: Add description
-            _playlist.playlistDescription = 
+            _playlist.SetDescription("")
             */
+	        
             // await Fetch();
-
-            return _playlist;
+            
+            _playlist.SavePlaylist();
+            return _playlist.Size;
         }
 
         private async Task Fetch()

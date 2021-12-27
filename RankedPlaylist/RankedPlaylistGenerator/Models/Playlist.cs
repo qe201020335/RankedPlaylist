@@ -28,7 +28,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         // private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // [hash]= Song
 
         // [JsonIgnore]
-        public int Size => 0;
+        public int Size => _playlist.Count;
 
         public string FileName
         {
@@ -46,12 +46,28 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         private BeatSaberPlaylistsLib.Types.IPlaylist _playlist;
 
 
-        internal Playlist(string title, string author)
+        internal Playlist(string title, string author, string filename)
         {
             playlistAuthor = author;
             playlistTitle = title;
-            _playlist = _playlistManager.CreatePlaylist("", title, author, "");
+
+            _playlist = _playlistManager.GetPlaylist(filename);
             
+            if (_playlist == null)
+            {
+                // Console.WriteLine("no previous");
+                _playlist = _playlistManager.CreatePlaylist(filename, title, author, "");
+            }
+            else
+            {
+                // clear the existing one for new songs
+                _playlist.Clear();
+                // Console.WriteLine("previous cleared");
+                
+                _playlist.Title = title;
+                _playlist.Author = author;
+            }
+
             // I hate duplicates in playlists, so 
             _playlist.AllowDuplicates = false;
         }
@@ -61,9 +77,10 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
             _playlist.SetCover(stream);
         }
 
-        public void SavePlaylist()
+        internal void SavePlaylist()
         {
             _playlistManager.StorePlaylist(_playlist);
+            // _playlistManager.RequestRefresh("Ranked Playlist");
         }
 
         internal void AddSong(string name, string author, string hash, string id)
