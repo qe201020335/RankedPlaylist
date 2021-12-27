@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -24,54 +23,43 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 
         private readonly int _maxSize;
 
+        private readonly string _filename;
+
         private Playlist _playlist;
 
         public event EventHandler<ErrorEventArgs> OnError;
         public event EventHandler<SongAddEventArgs> OnSongAdd;
 
-        public RankedPlaylistGenerator(float minStar, float maxStar, int size)
+        public RankedPlaylistGenerator(float minStar, float maxStar, int size, string filename)
         {
 	        _minStar = minStar;
 	        _maxStar = maxStar;
 	        _maxSize = size;
+	        _filename = filename;
         }
 
-        public async Task<Playlist> Make()
+        public async Task<int> Make()
         {
-	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator");
+	        _playlist = new Playlist($"Ranked {_minStar}-{_maxStar}", "RankedPlaylistGenerator", _filename);
 	        _playlist.OnSongAdd += OnSongAddBroadcastPassThrough;
-	        byte[] imageBytes = null;
-	        
+
 	        // Code copied from PlaylistManager and PlaylistsLib
 	        using (Stream imageStream = Assembly.GetExecutingAssembly().GetManifestResourceStream("RankedPlaylist.RankedPlaylistGenerator.Assets.PP_Stonks.png"))
 	        {
-		        if (imageStream == null || !imageStream.CanRead)
-			        imageBytes = null;
-		        else if (imageStream is MemoryStream cast)
+		        if (imageStream != null)
 		        {
-			        imageBytes = cast.ToArray();
-		        }
-		        else
-		        {
-			        using (MemoryStream ms = new MemoryStream())
-			        {
-				        imageStream.CopyTo(ms);
-				        imageBytes = ms.ToArray();
-			        }
+			        _playlist.SetImage(imageStream);
 		        }
 	        }
 
-	        if (imageBytes != null)
-	        {
-		        _playlist.image = Convert.ToBase64String(imageBytes);
-	        }
-	        
 	        /* TODO: Add description
-            _playlist.playlistDescription = 
+            _playlist.SetDescription("")
             */
+	        
             await Fetch();
-
-            return _playlist;
+            
+            _playlist.SavePlaylist();
+            return _playlist.Size;
         }
 
         private async Task Fetch()
@@ -289,6 +277,6 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 		        Console.Error.WriteLine(e);
 	        }
         }
-        
+
     }
 }
