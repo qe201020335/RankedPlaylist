@@ -56,7 +56,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
             _playlist.SetDescription("")
             */
 	        
-            // await Fetch();
+            await Fetch();
             
             _playlist.SavePlaylist();
             return _playlist.Size;

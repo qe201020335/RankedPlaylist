@@ -2,55 +2,23 @@
 using System.Collections.Generic;
 using System.IO;
 using BeatSaberPlaylistsLib;
+using BeatSaberPlaylistsLib.Types;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 
 namespace RankedPlaylist.RankedPlaylistGenerator.Models
 {
     public class Playlist
     {
-        // [JsonProperty("playlistTitle")]
-        public readonly string playlistTitle;
-
-        // [JsonProperty("playlistAuthor")]
-        public readonly string playlistAuthor;
-
-        // [JsonProperty("songs")]
-        // public List<Song> songs => GetSongs();
-
-        // [JsonProperty("image")]
-        // public string image = "";
-        
-        // [JsonProperty("playlistDescription")]
-        // public string playlistDescription = "";
-        
-        // I hate duplicates in playlists, so 
-        // [JsonIgnore]
-        // private readonly Dictionary<string, Song> _songs = new Dictionary<string, Song>();  // [hash]= Song
-
-        // [JsonIgnore]
         public int Size => _playlist.Count;
-
-        public string FileName
-        {
-            get => _playlist.Filename;
-            set
-            {
-                _playlist.Filename = value;
-            }
-        }
-
+        
         internal event EventHandler<SongAddEventArgs> OnSongAdd;
         
         private PlaylistManager _playlistManager = PlaylistManager.DefaultManager;
 
         private BeatSaberPlaylistsLib.Types.IPlaylist _playlist;
 
-
         internal Playlist(string title, string author, string filename)
         {
-            playlistAuthor = author;
-            playlistTitle = title;
-
             _playlist = _playlistManager.GetPlaylist(filename);
             
             if (_playlist == null)
@@ -85,6 +53,15 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
 
         internal void AddSong(string name, string author, string hash, string id)
         {
+
+            IPlaylistSong _song = _playlist.Add(hash, name, null, author);
+
+            if (_song != null)
+            {
+                var song = new Song(name, author, hash, id);
+                OnSongAddBroadcast(song, null);
+            }
+            
             // if (!_songs.ContainsKey(hash))
             // {
             //     var song =  new Song(name, author, hash, id);
@@ -95,6 +72,9 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
 
         internal void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
         {
+            
+            AddSong(name, author, hash, id);
+            
             // Song song;
             // if (_songs.ContainsKey(hash))
             // {
