@@ -10,7 +10,10 @@ namespace RankedPlaylistGenerator
     {
 	    private static void OnSongAdd(Object sender, SongAddEventArgs eventArgs)
 	    {
-		    Console.WriteLine($"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}");
+		    var text = eventArgs.Difficulty == null
+			    ? $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName}"
+			    : $"{eventArgs.Song.songName} - {eventArgs.Song.levelAuthorName} : {eventArgs.Difficulty.name}";
+		    Console.WriteLine(text);
 	    }
 	    
 	    private static void OnError(Object sender, ErrorEventArgs eventArgs)

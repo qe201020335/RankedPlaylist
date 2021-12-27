@@ -73,8 +73,29 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         internal void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
         {
             
-            AddSong(name, author, hash, id);
+            IPlaylistSong _song = _playlist.Add(hash, name, null, author);
+
+            if (_song == null)
+            {
+                return;
+            }
+
+            if (_song.Difficulties == null)
+            {
+                _song.Difficulties = new List<BeatSaberPlaylistsLib.Types.Difficulty>();
+            }
+
+            var diffStruct = new BeatSaberPlaylistsLib.Types.Difficulty
+            {
+                Characteristic = mode,
+                Name = difficulty
+            };
+            _song.Difficulties.Add(diffStruct);
             
+            var song = new Song(name, author, hash, id);
+            var diff = song.AddDifficulty(mode, difficulty);
+            OnSongAddBroadcast(song, diff);
+
             // Song song;
             // if (_songs.ContainsKey(hash))
             // {
