@@ -53,7 +53,7 @@ namespace RankedPlaylistGenerator
 		        Console.WriteLine("Invalid input");
 	        }
 	        
-	        while (!ScanInt(out size, "Playlist Size (roughly):"))
+	        while (!ScanInt(out size, "How Many? (roughly):"))
 	        {
 		        Console.WriteLine("Invalid input");
 	        }

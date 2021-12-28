@@ -6,7 +6,7 @@
         <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5'>
             <slider-setting value="max-star" text="Max Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
             <slider-setting value="min-star" text="Min Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
-            <slider-setting value="size" text="Max Size (Roughly)" increment="10" min="20" max="800" integer-only="true" apply-on-change="true" show-buttons="true"/>
+            <slider-setting value="size" text="How Many? (Roughly)" increment="10" min="20" max="800" integer-only="true" apply-on-change="true" show-buttons="true"/>
             
             <horizontal pad="1">
                 <button id="generate-button" text="Generate!" on-click="on-generate-click"/>

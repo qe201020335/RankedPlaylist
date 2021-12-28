@@ -128,11 +128,6 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
                 Console.Error.WriteLine(e);
             }
         }
-
-        // private List<Song> GetSongs()
-        // {
-        //     return new List<Song>(_songs.Values);
-        // }
     }
     
 }
