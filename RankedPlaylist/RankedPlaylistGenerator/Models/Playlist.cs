@@ -13,10 +13,12 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         
         internal event EventHandler<SongAddEventArgs> OnSongAdd;
         
-        private PlaylistManager _playlistManager = PlaylistManager.DefaultManager;
+        private readonly PlaylistManager _playlistManager = PlaylistManager.DefaultManager;
 
-        private BeatSaberPlaylistsLib.Types.IPlaylist _playlist;
+        private readonly BeatSaberPlaylistsLib.Types.IPlaylist _playlist;
 
+        // temporary store the IPlaylistSong I receive for later difficulty marking
+        private readonly Dictionary<string, IPlaylistSong> _songs = new Dictionary<string, IPlaylistSong>();  // [hash]=song
         internal Playlist(string title, string author, string filename)
         {
             _playlist = _playlistManager.GetPlaylist(filename);
@@ -54,29 +56,39 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
         internal void AddSong(string name, string author, string hash, string id)
         {
 
-            IPlaylistSong _song = _playlist.Add(hash, name, null, author);
+            if (_songs.ContainsKey(hash))
+            {
+                return;
+            }
+        
+            var _song = _playlist.Add(hash, name, null, author);
+
+            _songs[hash] = _song;
 
             if (_song != null)
             {
                 var song = new Song(name, author, hash, id);
                 OnSongAddBroadcast(song, null);
             }
-            
-            // if (!_songs.ContainsKey(hash))
-            // {
-            //     var song =  new Song(name, author, hash, id);
-            //     _songs[hash] = song;
-            //     OnSongAddBroadcast(song, null);
-            // }
         }
 
         internal void AddSong(string name, string author, string hash, string id, string mode, string difficulty)
         {
-            
-            IPlaylistSong _song = _playlist.Add(hash, name, null, author);
+            IPlaylistSong _song = null;
+            if (!_songs.ContainsKey(hash))
+            {
+                _song = _playlist.Add(hash, name, null, author);
+                _songs[hash] = _song;
+            }
+            else
+            {
+                _song = _songs[hash];
+            }
 
             if (_song == null)
             {
+                // not found even though we have already tried to add it
+                // shouldn't happen
                 return;
             }
 
@@ -95,20 +107,6 @@ namespace RankedPlaylist.RankedPlaylistGenerator.Models
             var song = new Song(name, author, hash, id);
             var diff = song.AddDifficulty(mode, difficulty);
             OnSongAddBroadcast(song, diff);
-
-            // Song song;
-            // if (_songs.ContainsKey(hash))
-            // {
-            //     song = _songs[hash];
-            // }
-            // else
-            // {
-            //     song = new Song(name, author, hash, id);
-            //     _songs[hash] = song;
-            // }
-            //
-            // var diff = song.AddDifficulty(mode, difficulty);
-            // OnSongAddBroadcast(song, diff);
 
         }
 
