@@ -214,6 +214,10 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 	                }
 	                AddSong(map);
 	                size++;
+	                if (size >= _maxSize)
+	                {
+		                return;
+	                }
                 }
                 
                 // next page
