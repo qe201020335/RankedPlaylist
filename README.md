@@ -1,6 +1,8 @@
 # RankedPlaylist
 Beat Saber ranked playlist generator.
 
+Suuports filter by rank stars, played and/or unplayed songs and also by accuracy of your played songs!
+
 ## PC MOD
 This is for the **PC** version of Beat Saber (Steam/Oculus). If you are playing the quest version, please see the [Standalone Version](#standalone-version) below.
 
