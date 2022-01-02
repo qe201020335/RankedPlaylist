@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Net.Http;
 using System.Reflection;
-using System.Security.Cryptography;
 using RankedPlaylist.RankedPlaylistGenerator.Models;
 using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventArgs;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
+using RankedPlaylist.RankedPlaylistGenerator.Utils;
 
 namespace RankedPlaylist.RankedPlaylistGenerator
 {
@@ -22,8 +22,19 @@ namespace RankedPlaylist.RankedPlaylistGenerator
         private readonly float _maxStar;
 
         private readonly int _maxSize;
-
         private readonly string _filename;
+
+        public Filter Filter { get; private set; } = Filter.Both; // default to both unplayed and played song
+
+        public bool FilterByAcc { get; private set; } = false;
+        public double TargetAcc { get; private set; } = 1;
+
+        public string PlayerID { get; private set; } = "";
+        
+		// save what the player has played for above filters
+        private Dictionary<long, double> _playerHistory = new Dictionary<long, double>();  // [leaderboardID]=acc
+
+
 
         private Playlist _playlist;
 
@@ -36,6 +47,15 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 	        _maxStar = maxStar;
 	        _maxSize = size;
 	        _filename = filename;
+        }
+
+        // haha a setter method with all arguments optional
+        public void SetFilters(Filter filter = Filter.Both, string playerID = "", bool byAcc = false, double targetAcc = 1)
+        {
+	        this.Filter = filter;
+	        this.PlayerID = playerID;
+	        this.FilterByAcc = byAcc;
+	        this.TargetAcc = targetAcc;
         }
 
         public async Task<int> Make()
@@ -55,55 +75,130 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 	        /* TODO: Add description
             _playlist.SetDescription("")
             */
-	        
-            await Fetch();
-            
-            _playlist.SavePlaylist();
+
+	        if (Filter == Filter.PlayedOnly)
+	        {
+		        await FetchPlayerInfo(true);
+	        }
+	        else
+	        {
+		        if (Filter != Filter.Both || FilterByAcc)
+		        {
+			        // we need the player data in this case
+			        await FetchPlayerInfo(false);
+		        }
+		        await FetchLeaderboards();
+	        }
+	        _playlist.SavePlaylist();
             return _playlist.Size;
         }
 
-        private async Task Fetch()
+        private async Task FetchPlayerInfo(bool generateFromPlayed)
+        {
+	        int page = 1;
+	        int size = 0;
+	        
+	        var response = await FetchPlayerInfoPage(page);
+
+	        while (true)  // pepega while true :D
+	        {
+		        var playerScores = response?["playerScores"]?.ToArray();
+		        if (playerScores == null || playerScores.Length == 0)
+		        {
+			        // we have reached the end
+			        // or we encountered an error that no scores are returned
+			        break;
+		        }
+		        
+		        /* useful info in a playerScore object
+		         {
+				    "score": {
+				        "baseScore": 920665,
+				        "modifiedScore": 920665,
+					},
+					"leaderboard": {
+						"id": 277080,
+					    "maxScore": 985435,
+					    "ranked": true,
+					}
+				}*/
+
+		        // process all the levels that this player has played
+		        foreach (var playerScore in playerScores)
+		        {
+			        if (playerScore["leaderboard"]?["ranked"]?.ToObject<bool>() == false)
+			        {
+				        return; // we have finished processing all the ranked scores
+			        }
+					
+			        var leaderboardID = playerScore["leaderboard"]?["id"]?.ToObject<long>();
+			        var maxScore = playerScore["leaderboard"]?["maxScore"]?.ToObject<long>();
+			        var baseScore = playerScore["score"]?["baseScore"]?.ToObject<long>();
+
+			        if (leaderboardID == null)
+			        {
+				        continue;
+			        }
+
+			        var acc = (maxScore == null || baseScore == null) ? 0 : baseScore.Value / (double)maxScore.Value;
+			        _playerHistory[leaderboardID.Value] = acc;
+
+			        if (generateFromPlayed)
+			        {
+				        if (!(FilterByAcc && acc > TargetAcc))
+				        {
+					        // if leaderboardID != null, playerScore["leaderboard"] must be not null
+					        AddSong(playerScore["leaderboard"]);
+					        
+					        size++;
+					        if (size >= _maxSize)
+					        {
+						        return;
+					        }
+				        }
+			        }
+		        }
+		        
+		        // next page
+		        page++;
+		        response = await FetchPlayerInfoPage(page);
+	        }
+	        
+        }
+        
+        private async Task<JObject> FetchPlayerInfoPage(int page)
+        {
+	        try
+	        {
+		        return JObject.Parse(await _client.GetStringAsync($"{_baseURL}/api/player" +
+		                                                          $"/{PlayerID}/scores" +
+		                                                          $"?sort=top" +
+		                                                          $"&page={page}" +
+		                                                          $"&withMetadata=true"));
+	        }
+	        catch (Exception e)
+	        {
+		        Console.Error.WriteLine(e);
+		        OnErrorBroadcast(e);
+		        return null;
+	        }
+        }
+
+        private async Task FetchLeaderboards()
         {
             // Console.WriteLine("Fetching...");
             
-            // _playlist.AddSong(
-            //     "Daisuki, Evolution", 
-            //     "Foxy Boi & Skeelie", 
-            //     "092453D3707C8EBDEC45BE1023AA8AF4F4868234", 
-            //     "custom_level_092453D3707C8EBDEC45BE1023AA8AF4F4868234"
-            // );
-            //
-            // _playlist.AddSong(
-            //     "Extra Mode", 
-            //     "Alice", 
-            //     "ACAFECF03095054D7B328EA660161C5269994C1A",     
-            //     "custom_level_ACAFECF03095054D7B328EA660161C5269994C1A",
-            //     "Standard",
-            //     "Expert"
-            // );
-            //
-            // _playlist.AddSong(
-            //     "Extra Mode", 
-            //     "Alice", 
-            //     "ACAFECF03095054D7B328EA660161C5269994C1A",     
-            //     "custom_level_ACAFECF03095054D7B328EA660161C5269994C1A",
-            //     "Standard",
-            //     "ExpertPlus"
-            // );
-            
-            // await Task.Delay(1000);
-
             int size = 0;
             int page = 1;
 
-            var response = await FetchPage(page);
+            var response = await FetchLeaderboardsPage(page);
 
             while (size <= _maxSize)
             {
                 var maps = response?["leaderboards"]?.ToArray();
                 if (maps == null || maps.Length == 0)
                 {
-                    // we have reach the end
+                    // we have reached the end
                     // or we encountered an error that no maps are returned
                     break;
                 }
@@ -123,18 +218,50 @@ namespace RankedPlaylist.RankedPlaylistGenerator
                 
                 // next page
                 page++;
-                response = await FetchPage(page);
+                response = await FetchLeaderboardsPage(page);
             }
 
             // Console.WriteLine("Fetch Done");
             // Console.WriteLine($"{size} maps/difficulties");
         }
 
+        private bool CheckFilter(long leaderboardID)
+        {
+	        switch (Filter)
+	        {
+		        case Filter.UnplayedOnly:
+			        if (_playerHistory.ContainsKey(leaderboardID))
+			        {
+				        return true;
+			        }
+			        break;
+		        
+		        case Filter.PlayedOnly:
+			        if (!_playerHistory.ContainsKey(leaderboardID))
+			        {
+				        return true;
+			        }
+			        break;
+		        
+		        case Filter.Both:
+		        // do nothing
+		        default:
+			        break;
+	        }
+
+	        var filteredByAcc = FilterByAcc
+	                            && Filter != Filter.UnplayedOnly
+	                            && _playerHistory.ContainsKey(leaderboardID)
+	                            && _playerHistory[leaderboardID] > TargetAcc;
+
+	        return filteredByAcc;
+        }
+
         private void AddSong(JToken map)
         {
-	        /* example leaderboard object
+	        /* useful info in a leaderboard object
             {
-				"id": 238821,
+				"id": 38448,
 				"songHash": "CB24CE05B6D0994586E2D4FBE999B304CF8F9D67",
 				"songName": "Galaxy Collapse",
 				"songSubName": "",
@@ -146,26 +273,32 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 					"gameMode": "SoloStandard",
 					"difficultyRaw": "_Expert_SoloStandard"
 				},
-				"maxScore": 3023235,
-				"createdDate": "2020-05-11T20:26:24.000Z",
-				"rankedDate": "2020-05-16T01:17:23.000Z",
-				"qualifiedDate": null,
-				"lovedDate": null,
-				"ranked": true,
-				"qualified": false,
-				"loved": false,
-				"maxPP": -1,
-				"stars": 7.99,
-				"plays": 2091,
-				"dailyPlays": 0,
-				"positiveModifiers": false,
-				"playerScore": null,
-				"coverImage": "https://cdn.scoresaber.com/covers/CB24CE05B6D0994586E2D4FBE999B304CF8F9D67.png",
-				"difficulties": null
+				"stars": 7.53
 			}
 			*/
-	        
-            // first get the basic song info
+
+	        var star = map["stars"]?.ToObject<float>();
+	        if (star == null || star > _maxSize || star < _minStar)
+	        {
+		        // basic star range check
+		        return;
+	        }
+
+	        var leaderboardID = map["id"]?.ToObject<long>();
+
+	        if (leaderboardID == null)
+	        {
+		        return; // no leaderboard id? something must've been wrong
+	        }
+
+	        // check filters and decided whether to add this map
+
+	        if (CheckFilter(leaderboardID.Value))
+	        {
+		        return;
+	        }
+
+	        // first get the basic song info
             var songName = map["songName"]?.ToObject<string>();
             var author = map["songAuthorName"]?.ToObject<string>();
             var hash = map["songHash"]?.ToObject<string>()?.ToUpper();
@@ -225,7 +358,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 	        
         }
         
-        private async Task<JObject> FetchPage(int page)
+        private async Task<JObject> FetchLeaderboardsPage(int page)
         {
             try
             {

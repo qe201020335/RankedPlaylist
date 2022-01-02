@@ -119,6 +119,7 @@
     <Compile Include="RankedPlaylistGenerator\Models\Playlist.cs" />
     <Compile Include="RankedPlaylistGenerator\Models\Song.cs" />
     <Compile Include="RankedPlaylistGenerator\RankedPlaylistGenerator.cs" />
+    <Compile Include="RankedPlaylistGenerator\Utils\Filter.cs" />
     <Compile Include="UI\ConfigViewFlowCoordinator.cs" />
     <Compile Include="UI\SettingMenuController.cs" />
   </ItemGroup>
