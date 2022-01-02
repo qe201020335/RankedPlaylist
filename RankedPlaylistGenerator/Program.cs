@@ -150,6 +150,7 @@ namespace RankedPlaylistGenerator
 	        
 	        generator.SetFilters(filter, id, byAcc, acc);
 
+	        Console.WriteLine("Fetching...");
 	        var count = await generator.Make();
 	        
             
