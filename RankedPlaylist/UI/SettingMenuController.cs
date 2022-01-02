@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using BeatSaberMarkupLanguage.Attributes;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using BeatSaberMarkupLanguage.Parser;
 using BeatSaberMarkupLanguage.ViewControllers;
+using BS_Utils.Gameplay;
 using RankedPlaylist.Configuration;
 using RankedPlaylist.RankedPlaylistGenerator.Events;
 using RankedPlaylist.RankedPlaylistGenerator.Models;
+using RankedPlaylist.RankedPlaylistGenerator.Utils;
 using TMPro;
 using ErrorEventArgs = RankedPlaylist.RankedPlaylistGenerator.Events.ErrorEventArgs;
 
@@ -32,6 +36,17 @@ namespace RankedPlaylist.UI
 
         [UIComponent("info-text2")] private TextMeshProUGUI _infoText2;
 
+
+        [UIValue("list-options")]
+        private List<object> _filterOptions = new object[] { Filter.UnplayedOnly, Filter.PlayedOnly, Filter.Both }.ToList();
+
+        [UIValue("list-choice")] private Filter _filterChoice = PluginConfig.Instance.Mode;
+
+        [UIValue("by-acc")] private bool _byAcc = PluginConfig.Instance.FilterByAcc;
+
+        [UIValue("target-acc")] private float _targetAcc = PluginConfig.Instance.TargetAcc;
+
+        
         [UIAction("on-generate-click")]
         private async void OnGenerateClick()
         {
@@ -50,6 +65,10 @@ namespace RankedPlaylist.UI
             PluginConfig.Instance.MaxStar = _maxStar;
             PluginConfig.Instance.MinStar = _minStar;
             PluginConfig.Instance.Size = _size;
+
+            PluginConfig.Instance.Mode = _filterChoice;
+            PluginConfig.Instance.FilterByAcc = _byAcc;
+            PluginConfig.Instance.TargetAcc = _targetAcc;
         }
 
         private void OnSongAdd(Object sender, SongAddEventArgs eventArgs)
@@ -82,13 +101,17 @@ namespace RankedPlaylist.UI
                 return;
             }
             _running = true;
-            Logger.logger.Debug($"{_minStar}, {_maxStar}, {_size}");
+            var userInfo = await GetUserInfo.GetUserAsync();
+            Logger.logger.Debug($"{_minStar}, {_maxStar}, {_size}, {_filterChoice}, {userInfo.platformUserId}, {_byAcc}, {_targetAcc}");
             _generator = new RankedPlaylistGenerator.RankedPlaylistGenerator(_minStar, _maxStar, _size, "__RankedPlaylist_generated");
             _generator.OnSongAdd += OnSongAdd;
             _generator.OnError += OnError;
             
+            _generator.SetFilters(_filterChoice, userInfo.platformUserId, _byAcc, _targetAcc / 100);
+            
             Logger.logger.Info("Start Fetching Ranked Songs");
             _infoText.text = "Fetching...";
+            _infoText2.text = "Please be patient.";
             try
             {
                 var count = await _generator.Make();

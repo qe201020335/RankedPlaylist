@@ -1,5 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 using IPA.Config.Stores;
+using RankedPlaylist.RankedPlaylistGenerator.Utils;
 
 [assembly: InternalsVisibleTo(GeneratedStore.AssemblyVisibilityTarget)]
 namespace RankedPlaylist.Configuration
@@ -14,6 +15,12 @@ namespace RankedPlaylist.Configuration
         public virtual float MinStar { get; set; } = 5;
 
         public virtual int Size { get; set; } = 50;
+
+        public virtual Filter Mode { get; set; } = Filter.Both;
+
+        public virtual bool FilterByAcc { get; set; } = true;
+
+        public virtual float TargetAcc { get; set; } = 92f;
 
         public virtual bool DebugLogSpam { get; set; } = false;
         

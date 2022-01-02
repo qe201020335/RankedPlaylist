@@ -2,17 +2,26 @@
                     xsi:noNamespaceSchemaLocation='https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'
                     xsi:schemaLocation='https://monkeymanboy.github.io/BSML-Docs/ https://raw.githubusercontent.com/monkeymanboy/BSML-Docs/gh-pages/BSMLSchema.xsd'>
     
-    <vertical spacing="1.5" horizontal-fit="PreferredSize" vertical-fit="PreferredSize">
-        <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5'>
-            <slider-setting value="max-star" text="Max Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
-            <slider-setting value="min-star" text="Min Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
-            <slider-setting value="size" text="How Many? (Roughly)" increment="10" min="20" max="800" integer-only="true" apply-on-change="true" show-buttons="true"/>
-            
-            <horizontal pad="1">
-                <button id="generate-button" text="Generate!" on-click="on-generate-click"/>
-<!--                <button id="test-button" text="test" on-click="test-button"/>-->
+    <vertical spacing="1.5" horizontal-fit="PreferredSize" vertical-fit="PreferredSize" >
+        <vertical>
+            <horizontal spacing="4" min-width="140">
+                <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5' preferred-width="70">
+                    <slider-setting value="max-star" text="Max Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true" />
+                    <slider-setting value="min-star" text="Min Star" increment="0.1" min="0" max="15" integer-only="false" apply-on-change="true" show-buttons="true"/>
+                    <slider-setting value="size" text="How Many?" increment="10" min="20" max="800" integer-only="true" apply-on-change="true" show-buttons="true"/>
+                </vertical>
+                <vertical child-control-height='false' child-expand-height='false' child-expand-width="false" child-control-width="true" spacing='1.5' preferred-width="70">
+                    <dropdown-list-setting value='list-choice' choices='list-options' text="Mode" apply-on-change="true"/>
+                    <toggle-setting value="by-acc" text="Filter by Accuracy" apply-on-change="true" preferred-width="106"/>
+                    <slider-setting value="target-acc" text="Target Acc" increment="0.01" min="50" max="100" integer-only="false" apply-on-change="true" show-buttons="true"/>
+                </vertical>
             </horizontal>
         </vertical>
+        
+        <horizontal pad="1">
+            <button id="generate-button" text="Generate!" on-click="on-generate-click"/>
+            <!--                <button id="test-button" text="test" on-click="test-button"/>-->
+        </horizontal>
         <horizontal horizontal-fit='PreferredSize' pad-top="1">
             <text id='info-text' text="Use the filters above ↑" italics="false" align="Center"/>
         </horizontal>

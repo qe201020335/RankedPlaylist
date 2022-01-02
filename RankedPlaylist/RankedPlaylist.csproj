@@ -106,6 +106,10 @@
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
       <Private>False</Private>
     </Reference>
+      <Reference Include="BS_Utils">
+          <HintPath>$(BeatSaberDir)\Plugins\BS_Utils.dll</HintPath>
+          <Private>false</Private>
+      </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logger.cs" />
