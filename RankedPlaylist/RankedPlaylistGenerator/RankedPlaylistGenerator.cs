@@ -145,17 +145,25 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 
 			        if (generateFromPlayed)
 			        {
-				        if (!(FilterByAcc && acc > TargetAcc))
+				        // if leaderboardID != null, playerScore["leaderboard"] must be not null
+				        var leaderboard = playerScore["leaderboard"];
+				        var star = leaderboard["stars"]?.ToObject<float>();
+				        // basic star range check
+				        if (star != null && star <= _maxStar && star >= _minStar)
 				        {
-					        // if leaderboardID != null, playerScore["leaderboard"] must be not null
-					        AddSong(playerScore["leaderboard"]);
-					        
-					        size++;
-					        if (size >= _maxSize)
+					        // target acc check
+					        if (!(FilterByAcc && acc > TargetAcc))
 					        {
-						        return;
+						        AddSong(playerScore["leaderboard"]);
+								
+						        size++;
+						        if (size >= _maxSize)
+						        {
+							        return;
+						        }
 					        }
 				        }
+
 			        }
 		        }
 		        
@@ -281,12 +289,7 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 			}
 			*/
 
-	        var star = map["stars"]?.ToObject<float>();
-	        if (star == null || star > _maxSize || star < _minStar)
-	        {
-		        // basic star range check
-		        return;
-	        }
+	        
 
 	        var leaderboardID = map["id"]?.ToObject<long>();
 
