@@ -22,7 +22,7 @@ Technically this mod doesn't depend on PlaylistManager, but without it you won't
 4. After genearting a playlist, you can download the songs using [PlaylistManager](https://github.com/rithik-b/PlaylistManager).
 
 ## Standalone Version
-Use this is you are playing the quest version of Beat Saber!
+Use this if you are playing the quest version of Beat Saber!
 
 1. Download the **standalone** one from the [latest release](https://github.com/qe201020335/RankedPlaylist/releases/latest).
 2. Extract the archive and run `RankedPlaylistGenerator.exe`.
@@ -32,7 +32,7 @@ Use this is you are playing the quest version of Beat Saber!
 Currently this only works on Windows. I'm thinking about making a web version of this generator so you can use it anywhere.
 
 ## TODO
-1. Allow filter by the songs you have or have not played. 
-2. Allow filter by the percentage of your played song
+* <s> Allow filter by the songs you have or have not played. </s>
+* <s> Allow filter by the percentage of your played songs. </s>
 
 Please open an [issue](https://github.com/qe201020335/RankedPlaylist/issues) if you found something wrong or want to request a feature!
