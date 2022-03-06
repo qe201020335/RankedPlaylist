@@ -182,7 +182,8 @@ namespace RankedPlaylist.RankedPlaylistGenerator
 		                                                          $"/{PlayerID}/scores" +
 		                                                          $"?sort=top" +
 		                                                          $"&page={page}" +
-		                                                          $"&withMetadata=true"));
+		                                                          $"&withMetadata=true" + 
+		                                                          $"&limit=64"));
 	        }
 	        catch (Exception e)
 	        {
